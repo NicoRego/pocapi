@@ -22,4 +22,8 @@ public class HospitalService {
 		return hospitalRepository.findById(id);
 	}
 
+	public Iterable<Hospital> getHospitalsBySpecialtyAndFreeBeds(int specialtyId, int minFreeBeds) {
+		return hospitalRepository.findBySpecialtyAndFreeBeds(specialtyId, minFreeBeds);
+	}
+
 }
