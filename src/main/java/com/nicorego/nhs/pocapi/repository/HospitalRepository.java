@@ -14,8 +14,8 @@ public interface HospitalRepository extends CrudRepository<Hospital, Integer>{
 
     @Query(value = "SELECT * " +
             "FROM hospital h " +
-            "INNER JOIN hospital_specialty hs ON hs.hospital_id = h.hospId " +
-            "INNER JOIN specialty s ON hs.specialty_id = s.specId " +
+            "INNER JOIN hospital_specialty hs ON hs.hospital_id = h.id " +
+            "INNER JOIN specialty s ON hs.specialty_id = s.id " +
             "WHERE h.free_beds > ?2 " +
             "AND hs.specialty_id = ?1", nativeQuery = true)
     List<Hospital> findBySpecialtyAndFreeBeds(@Param("specialtyId") int specialtyId, @Param("minFreeBeds") int minFreeBeds);
