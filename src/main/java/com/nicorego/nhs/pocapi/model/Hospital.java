@@ -23,10 +23,10 @@ public class Hospital {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long idhospital;
 
-	@Column(name = "name")
-	private String name;
+	@Column(name = "hosp_name")
+	private String hospital_name;
 
 	@Column(name = "latitude")
 	private Double latitude;
@@ -68,21 +68,21 @@ public class Hospital {
 	// Id
 	
 	public Long getId() {
-		return id;
+		return idhospital;
 	}
 
 	public void setId(Long id) {
-		this.id = id;
+		this.idhospital = id;
 	}
 
 	// Name
 	
 	public String getName() {
-		return name;
+		return hospital_name;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.hospital_name = name;
 	}
 
 	// Latitude

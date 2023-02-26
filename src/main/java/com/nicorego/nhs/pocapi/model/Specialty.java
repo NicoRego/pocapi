@@ -11,10 +11,10 @@ public class Specialty {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    private Long idspecialty;
 
-    @Column(name="name")
-    private String name;
+    @Column(name="spec_name")
+    private String specialty_name;
  	    
     // Joins
  	@ManyToMany(
@@ -42,21 +42,21 @@ public class Specialty {
  	// Id
  	
 	public Long getId() {
-        return id;
+        return idspecialty;
     }
 
 	public void setId(Long id) {
-        this.id = id;
+        this.idspecialty = id;
     }
 	
 	// Name
 	
     public String getName() {
-        return name;
+        return specialty_name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.specialty_name = name;
     }
 
 }

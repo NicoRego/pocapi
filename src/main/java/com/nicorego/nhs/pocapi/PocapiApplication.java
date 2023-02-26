@@ -11,8 +11,11 @@ import com.nicorego.nhs.pocapi.model.Hospital;
 import com.nicorego.nhs.pocapi.model.Specialty;
 import com.nicorego.nhs.pocapi.service.HospitalService;
 import com.nicorego.nhs.pocapi.service.SpecialtyService;
+import com.nicorego.nhs.pocapi.business.Distance;
 
 import jakarta.transaction.Transactional;
+
+import static java.lang.Math.round;
 
 @SpringBootApplication
 public class PocapiApplication implements CommandLineRunner {
@@ -105,6 +108,55 @@ public class PocapiApplication implements CommandLineRunner {
 
 		System.out.println("Hôpitaux associés :");
 		iterableHospitalsSpecBeds.forEach(hospitalSpecBeds -> System.out.println(hospitalSpecBeds.getId() + "-" + hospitalSpecBeds.getName() + "-" + hospitalSpecBeds.getFreeBeds()));
+
+		// Get Hospitals by specialty and free beds
+
+		System.out.println();
+		System.out.println("Test - FIND HOSPITALS FOR A GIVEN SPECIALTY");
+		System.out.println("===========================================");
+		System.out.println();
+
+		int given2ndSpecialtyId = 1;
+
+		// Get specialty
+		Optional<Specialty> opt2ndGivenSpecialty = specialtyService.getSpecialtyById(given2ndSpecialtyId);
+		Specialty given2ndSpecialty = opt2ndGivenSpecialty.get();
+
+		// Resolve query
+		Iterable<Hospital> iterableHospitalsSpec = hospitalService.getHospitalsBySpecialty(given2ndSpecialtyId);
+
+		// Print out result
+		System.out.println("Spécialité : " + given2ndSpecialty.getName());
+		System.out.println();
+
+		System.out.println("Hôpitaux associés :");
+		iterableHospitalsSpec.forEach(hospitalSpec -> System.out.println(hospitalSpec.getId() + "-" + hospitalSpec.getName() + "-" + hospitalSpec.getFreeBeds()));
+
+		// Get nearest hospitals for a given specialty and with free beds
+
+		System.out.println();
+		System.out.println("Test - FIND NEAREST HOSPITALS FOR A GIVEN SPECIALTY AND WITH FREE BEDS");
+		System.out.println("===========================================");
+		System.out.println();
+
+		int given3rdSpecialtyId = 1;
+		double latitude = 50.637062;
+		double longitude = 3.064312;
+
+		System.out.println();
+
+		Hospital nearestAvailableHospital = hospitalService.getNearestAvailableHospital(latitude,  longitude, given3rdSpecialtyId);
+		Specialty given3rdSpecialty = opt2ndGivenSpecialty.get();
+
+		// Print out result
+		System.out.println("Spécialité : " + given3rdSpecialty.getName());
+		System.out.println();
+
+		System.out.println("Hôpital disponible :");
+		System.out.println(nearestAvailableHospital.getName());
+		System.out.println();
+		System.out.println("Distance du point :");
+		System.out.println(round(Distance.distanceHaversine(nearestAvailableHospital.getLatitude(), nearestAvailableHospital.getLongitude(), latitude, longitude)) + " kms");
 
 	}
 }
