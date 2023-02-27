@@ -18,7 +18,7 @@ public class HospitalService {
 
 	@Autowired
 	private HospitalRepository hospitalRepository;
-	
+
 	public Iterable<Hospital> getHospitals(){
 		return hospitalRepository.findAll();
 	}
@@ -36,11 +36,15 @@ public class HospitalService {
 
 	public Hospital getNearestAvailableHospital(Double latitude, Double longitude, Integer specialtyId) {
 
+		System.out.println("Processing request...");
+
 		// List for distance and free beds
 		ArrayList<Double> distanceHospitals = new ArrayList<>();
+		System.out.println("New hospital list declared");
 
 		// Filter hospitals by specialty and free beds
 		List<Hospital> filteredHospitals = hospitalRepository.findBySpecialtyAndFreeBeds(specialtyId, 0);
+		System.out.println("Hospitals filtered by specialty and free beds");
 
 		// Get distance from latitude and longitude for each hospital in list
 		for (Hospital filteredHospital : filteredHospitals) {
@@ -48,11 +52,40 @@ public class HospitalService {
 					filteredHospital.getLongitude());
 			distanceHospitals.add(dist);
 		}
+		System.out.println("Distances calculated");
 
-		// Find and return the index of the nearest hospital
-		Hospital nearestAvailableHospital = filteredHospitals.get(distanceHospitals.indexOf(Collections.min(distanceHospitals)));
-
-		return nearestAvailableHospital;
+		// Find and return index of nearest hospital
+		return filteredHospitals.get(distanceHospitals.indexOf(Collections.min(distanceHospitals)));
 	}
+
+	public Hospital bookBed(Hospital hospital) {
+
+		// Decrease available beds
+		if (hospital.getFreeBeds() > 0) {
+			hospital.setFreeBeds(hospital.getFreeBeds() - 1);
+
+			// Save hospital
+			saveHospital(hospital);
+		}
+
+		return hospital;
+	}
+
+	public Hospital unbookBed(Hospital hospital) {
+
+		// Increase available beds
+		hospital.setFreeBeds(hospital.getFreeBeds() + 1);
+
+		// Save hospital
+		saveHospital(hospital);
+
+		return hospital;
+	}
+
+	public Hospital saveHospital(Hospital hospital) {
+
+		return hospitalRepository.save(hospital);
+	}
+
 
 }

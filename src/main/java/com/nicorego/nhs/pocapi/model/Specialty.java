@@ -1,22 +1,30 @@
 package com.nicorego.nhs.pocapi.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "specialty")
-public class Specialty {
+public class Specialty implements Serializable {
 
     @Id
+    @JsonProperty("id_specialty")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long idspecialty;
+	public Long id_specialty;
 
-    @Column(name="spec_name")
-    private String specialty_name;
+    @JsonProperty("specialty_name")
+    @Column(name="specialty_name")
+	public String specialty_name;
  	    
-    // Joins
+    // Jointures
+    @JsonManagedReference
  	@ManyToMany(
  			mappedBy = "specialties",
  			cascade = {
@@ -28,8 +36,8 @@ public class Specialty {
     // Getters and Setters
    
  	// Hospitals
- 	
-	private List<Hospital> hospitals = new ArrayList<>();
+
+	public List<Hospital> hospitals = new ArrayList<>();
 	 
  	public List<Hospital> getHospitals() {
 		return hospitals;
@@ -38,25 +46,5 @@ public class Specialty {
  	public void setHospitals(List<Hospital> hospitals) {
 		this.hospitals = hospitals;
 	}
- 	
- 	// Id
- 	
-	public Long getId() {
-        return idspecialty;
-    }
-
-	public void setId(Long id) {
-        this.idspecialty = id;
-    }
-	
-	// Name
-	
-    public String getName() {
-        return specialty_name;
-    }
-
-    public void setName(String name) {
-        this.specialty_name = name;
-    }
 
 }
