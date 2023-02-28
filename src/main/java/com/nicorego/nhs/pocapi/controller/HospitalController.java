@@ -11,13 +11,11 @@ import com.nicorego.nhs.pocapi.model.Hospital;
 import com.nicorego.nhs.pocapi.repository.HospitalRepository;
 import com.nicorego.nhs.pocapi.service.HospitalService;
 
-import java.net.URI;
-
 @RestController
 public class HospitalController {
 
-    private HospitalService hospitalService;
-    private HospitalRepository hospitalRepository;
+    final private HospitalService hospitalService;
+    final private HospitalRepository hospitalRepository;
 
     @Autowired
     public HospitalController(HospitalService hospitalService, HospitalRepository hospitalRepository) {
@@ -42,7 +40,7 @@ public class HospitalController {
         if (nearestHospital == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok().headers(header).body(nearestHospital);
+            return ResponseEntity.status(HttpStatus.OK).headers(header).body(nearestHospital);
         }
     }
 
