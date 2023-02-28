@@ -1,16 +1,23 @@
 package com.nicorego.nhs.pocapi.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.DynamicUpdate;
 
-@Data
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@ToString
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
+@DynamicUpdate
 @Table(name = "specialty")
 public class Specialty implements Serializable {
 
@@ -32,8 +39,9 @@ public class Specialty implements Serializable {
  					CascadeType.MERGE
  			} 
  	)
-  	
-    // Getters and Setters
+	@ToString.Exclude
+
+	// Getters and Setters
    
  	// Hospitals
 
@@ -47,4 +55,16 @@ public class Specialty implements Serializable {
 		this.hospitals = hospitals;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Specialty specialty = (Specialty) o;
+		return idspecialty != null && Objects.equals(idspecialty, specialty.idspecialty);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

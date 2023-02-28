@@ -1,13 +1,17 @@
 package com.nicorego.nhs.pocapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.nicorego.nhs.pocapi.model.Hospital;
 import com.nicorego.nhs.pocapi.repository.HospitalRepository;
 import com.nicorego.nhs.pocapi.service.HospitalService;
+
+import java.net.URI;
 
 @RestController
 public class HospitalController {
@@ -26,19 +30,21 @@ public class HospitalController {
     public ResponseEntity<Hospital> getNearestAvailableHospital(@RequestParam("latitude") Double latitude,
                                                                 @RequestParam("longitude") Double longitude,
                                                                 @RequestParam("specialty") Integer specialtyId) {
-        // En attendant la journalisation
-        System.out.println("Request received");
+
         Hospital nearestHospital = hospitalService.getNearestAvailableHospital(latitude, longitude, specialtyId);
-        System.out.println("Request treated");
+
+        // Build header
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+        header.setCacheControl("no-cache");
+
+        // Return response
         if (nearestHospital == null) {
-            System.out.println("Response not found");
             return ResponseEntity.notFound().build();
         } else {
-            System.out.println("Response ok");
-            return ResponseEntity.ok(nearestHospital);
+            return ResponseEntity.ok().headers(header).body(nearestHospital);
         }
     }
-
 
     @PutMapping("/room/book_bed")
     @ResponseBody

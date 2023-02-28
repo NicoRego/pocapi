@@ -1,26 +1,23 @@
 package com.nicorego.nhs.pocapi.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import lombok.Data;
-
-@Data
+@ToString
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
+@DynamicUpdate
 @Table(name = "hospital")
 public class Hospital implements Serializable {
 
@@ -58,9 +55,10 @@ public class Hospital implements Serializable {
 			)
 	@JoinTable(
 			name = "hospital_specialty",
-			joinColumns = @JoinColumn(name = "idhospital"),
-			inverseJoinColumns = @JoinColumn(name = "idspecialty")
+			joinColumns = @JoinColumn(name = "hospitalid"),
+			inverseJoinColumns = @JoinColumn(name = "specialtyid")
 			)
+	@ToString.Exclude
 
 	// Getters and setters
 	  
@@ -76,4 +74,16 @@ public class Hospital implements Serializable {
 		this.specialties = specialties;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Hospital hospital = (Hospital) o;
+		return idhospital != null && Objects.equals(idhospital, hospital.idhospital);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
