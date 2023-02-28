@@ -14,7 +14,7 @@ CREATE TABLE `specialty` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 CREATE TABLE `hospital_specialty` (
-  `hospital_id` int NOT NULL,
-  `specialty_id` int NOT NULL,
-  PRIMARY KEY (`hospital_id`,`specialty_id`)
+  `idhospital` int NOT NULL,
+  `idspecialty` int NOT NULL,
+  PRIMARY KEY (`idhospital`,`idspecialty`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

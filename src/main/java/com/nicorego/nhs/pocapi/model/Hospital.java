@@ -27,12 +27,12 @@ public class Hospital implements Serializable {
 	// Attributes
 	
 	@Id
-	@JsonProperty("id_hospital")
+	@JsonProperty("idhospital")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long id_hospital;
+	public Long idhospital;
 
 	@JsonProperty("hospital_name")
-	@Column(name = "hospital_name")
+	@Column(name = "hosp_name")
 	public String hospital_name;
 
 	@JsonProperty("latitude")
@@ -58,8 +58,8 @@ public class Hospital implements Serializable {
 			)
 	@JoinTable(
 			name = "hospital_specialty",
-			joinColumns = @JoinColumn(name = "hospital_id"),
-			inverseJoinColumns = @JoinColumn(name = "specialty_id")
+			joinColumns = @JoinColumn(name = "idhospital"),
+			inverseJoinColumns = @JoinColumn(name = "idspecialty")
 			)
 
 	// Getters and setters

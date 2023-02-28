@@ -15,12 +15,12 @@ import lombok.Data;
 public class Specialty implements Serializable {
 
     @Id
-    @JsonProperty("id_specialty")
+    @JsonProperty("idspecialty")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-	public Long id_specialty;
+	public Long idspecialty;
 
     @JsonProperty("specialty_name")
-    @Column(name="specialty_name")
+    @Column(name="spec_name")
 	public String specialty_name;
  	    
     // Jointures

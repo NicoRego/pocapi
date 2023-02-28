@@ -50,7 +50,7 @@ public class PocapiApplication implements CommandLineRunner {
 			System.out.println("====================");
 			System.out.println();
 			Iterable<Hospital> iterableHospitals = hospitalService.getHospitals();
-			iterableHospitals.forEach(hospital -> System.out.println(hospital.getId_hospital() + "-" + hospital.getHospital_name() + "-" + hospital.getFreeBeds()));
+			iterableHospitals.forEach(hospital -> System.out.println(hospital.getIdhospital() + "-" + hospital.getHospital_name() + "-" + hospital.getFreeBeds()));
 
 			// Get one hospital ********************************************************************************************
 
@@ -63,7 +63,7 @@ public class PocapiApplication implements CommandLineRunner {
 			Optional<Hospital> optionalHospital = hospitalService.getHospitalById(1);
 			if (optionalHospital.isPresent()) {
 				Hospital oneHospital = optionalHospital.get();
-				System.out.println(oneHospital.getId_hospital() + "-" + oneHospital.getHospital_name());
+				System.out.println(oneHospital.getIdhospital() + "-" + oneHospital.getHospital_name());
 			}
 
 			// Get one specialty and related hospitals *********************************************************************
@@ -109,7 +109,7 @@ public class PocapiApplication implements CommandLineRunner {
 					System.out.println("Spécialités associées :");
 
 					hospitalForSpecialties.getSpecialties().forEach(
-							specialtiesForHopsital -> System.out.println(specialtiesForHopsital.getId_specialty() + " - " + specialtiesForHopsital.getSpecialty_name()));
+							specialtiesForHopsital -> System.out.println(specialtiesForHopsital.getIdspecialty() + " - " + specialtiesForHopsital.getSpecialty_name()));
 				} else {
 					System.out.println(String.format("Hôpital %d introuvable", hospId));
 				}
@@ -138,7 +138,7 @@ public class PocapiApplication implements CommandLineRunner {
 				System.out.println();
 
 				System.out.println("Hôpitaux associés :");
-				iterableHospitalsSpecBeds.forEach(hospitalSpecBeds -> System.out.println(hospitalSpecBeds.getId_hospital() + "-" + hospitalSpecBeds.getHospital_name() + "-" + hospitalSpecBeds.getFreeBeds()));
+				iterableHospitalsSpecBeds.forEach(hospitalSpecBeds -> System.out.println(hospitalSpecBeds.getIdhospital() + "-" + hospitalSpecBeds.getHospital_name() + "-" + hospitalSpecBeds.getFreeBeds()));
 			}
 
 			// Get Hospitals by specialty and free beds ********************************************************************
@@ -164,7 +164,7 @@ public class PocapiApplication implements CommandLineRunner {
 				System.out.println();
 
 				System.out.println("Hôpitaux associés :");
-				iterableHospitalsSpec.forEach(hospitalSpec -> System.out.println(hospitalSpec.getId_hospital() + "-" + hospitalSpec.getHospital_name() + "-" + hospitalSpec.getFreeBeds()));
+				iterableHospitalsSpec.forEach(hospitalSpec -> System.out.println(hospitalSpec.getIdhospital() + "-" + hospitalSpec.getHospital_name() + "-" + hospitalSpec.getFreeBeds()));
 			}
 			// Get nearest hospitals for a given specialty and with free beds **********************************************
 
