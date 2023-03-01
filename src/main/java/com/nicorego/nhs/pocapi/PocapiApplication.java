@@ -212,26 +212,30 @@ public class PocapiApplication implements CommandLineRunner {
 			System.out.println(String.format("Nombre de lits disponibles après réservation : %d", nearestAvailableHospital2nd.getFreeBeds()));
 			System.out.println();
 
-			Hospital bookedHospital = hospitalService.bookBed(nearestAvailableHospital2nd);
+			if (hospitalService.bedBooking(nearestAvailableHospital2nd)) {
+				System.out.println(String.format("Nombre de lits disponibles après réservation : %d", nearestAvailableHospital2nd.getFreeBeds()));
+				System.out.println();
 
-			System.out.println(String.format("Nombre de lits disponibles après réservation : %d", bookedHospital.getFreeBeds()));
+			} else {
+				System.out.println(String.format("Réservation non faite. Nombre de lits disponibles après réservation : %d", nearestAvailableHospital2nd.getFreeBeds()));
+				System.out.println();
+			}
+
+			// Unbook a room in nearest available hospital
+
+			System.out.println();
+			System.out.println("====================================");
+			System.out.println("TEST - CANCEL BOOKING IN AN HOSPITAL");
+			System.out.println("====================================");
 			System.out.println();
 
-			// Unnook a room in nearest available hospital
-
-			System.out.println();
-			System.out.println("==================================");
-			System.out.println("Test - UNBOOK A BED IN AN HOSPITAL");
-			System.out.println("==================================");
+			System.out.println(String.format("Hôpital réservé : %s", nearestAvailableHospital2nd.getHospital_name()));
+			System.out.println(String.format("Nombre de lits disponibles avant annulation : %d", nearestAvailableHospital2nd.getFreeBeds()));
 			System.out.println();
 
-			System.out.println(String.format("Hôpital réservé : %s", bookedHospital.getHospital_name()));
-			System.out.println(String.format("Nombre de lits disponibles avant réservation : %d", bookedHospital.getFreeBeds()));
-			System.out.println();
+			hospitalService.cancelBedBooking(nearestAvailableHospital2nd);
 
-			Hospital unbookedHospital = hospitalService.unbookBed(bookedHospital);
-
-			System.out.println(String.format("Nombre de lits disponibles après réservation : %d", unbookedHospital.getFreeBeds()));
+			System.out.println(String.format("Nombre de lits disponibles après annulation : %d", nearestAvailableHospital2nd.getFreeBeds()));
 		}
 	}
 

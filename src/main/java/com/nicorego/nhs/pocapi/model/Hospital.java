@@ -1,7 +1,10 @@
 package com.nicorego.nhs.pocapi.model;
-
+/*
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;*/
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -13,39 +16,49 @@ import java.util.List;
 import java.util.Objects;
 
 @ToString
-@Getter
-@Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
+// @JsonInclude
 @DynamicUpdate
+// @JsonIgnoreProperties("hospital_specialty")
 @Table(name = "hospital")
 public class Hospital implements Serializable {
 
 	// Attributes
 	
 	@Id
-	@JsonProperty("idhospital")
+	@Getter
+	@Setter
+	// @JsonProperty("idhospital")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long idhospital;
+	private Long idhospital;
 
-	@JsonProperty("hospital_name")
+	@Getter
+	@Setter
+	// @JsonProperty("hospital_name")
 	@Column(name = "hosp_name")
-	public String hospital_name;
+	private String hospital_name;
 
-	@JsonProperty("latitude")
+	@Getter
+	@Setter
+	// @JsonProperty("latitude")
 	@Column(name = "latitude")
-	public Double latitude;
+	private Double latitude;
 
-	@JsonProperty("longitude")
+	@Getter
+	@Setter
+	// @JsonProperty("longitude")
 	@Column(name = "longitude")
-	public Double longitude;
+	private Double longitude;
 
-	@JsonProperty("free_beds")
+	@Getter
+	@Setter
+	// @JsonProperty("free_beds")
 	@Column(name = "free_beds")
-	public Integer freeBeds;
+	private Integer freeBeds;
 
 	// Jointure
-	@JsonManagedReference
+	// @JsonManagedReference
     @ManyToMany(
 			fetch = FetchType.LAZY,
 			cascade = {
@@ -86,4 +99,10 @@ public class Hospital implements Serializable {
 	public int hashCode() {
 		return getClass().hashCode();
 	}
+
+	// Convert hospital object to JSON
+	/*public String toJson() throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+	 	return mapper.writeValueAsString(this);
+	}*/
 }

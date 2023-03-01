@@ -7,13 +7,17 @@ INSERT INTO hospital (hosp_name, latitude, longitude, free_beds) VALUES
 INSERT INTO specialty (spec_name) VALUES
   ('Cardiologie'),
   ('Immunologie'),
-  ('Neuropathologie diagnostique');
+  ('Neuropathologie diagnostique'),
+  ('Néphrologie');
   
 
 INSERT INTO hospital_specialty (hospital_id, specialty_id) VALUES
   (1, 1),
   (1, 2),
   (2, 1),
+  (2, 2),
+  (2, 3),
+  (2, 4),
   (3, 2),
   (3, 3);
   
