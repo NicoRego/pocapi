@@ -1,7 +1,5 @@
 package com.nicorego.nhs.pocapi.model;
 
-import com.fasterxml.jackson.annotation.*;
-// import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +16,6 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @Entity
-@JsonInclude
 @DynamicUpdate
 @Table(name = "specialty")
 public class Specialty implements Serializable {
@@ -26,18 +23,15 @@ public class Specialty implements Serializable {
     @Id
 	@Getter
 	@Setter
-    // @JsonProperty("idspecialty")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long idspecialty;
 
 	@Getter
 	@Setter
-	// @JsonProperty("specialty_name")
     @Column(name="spec_name")
-	private String specialty_name;
+	private String specialtyName;
  	    
     // Jointures
-    // @JsonBackReference
  	@ManyToMany(
  			mappedBy = "specialties",
  			cascade = {

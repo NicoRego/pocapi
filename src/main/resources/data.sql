@@ -1,17 +1,18 @@
+DELETE FROM hospital;
+INSERT INTO hospital (idhospital, hosp_name, latitude, longitude, free_beds) VALUES
+  (1, 'Hopital Saint Vincent de Paul', 50.620312, 3.077438, 2),
+  (2, 'Centre Hospitalier Universitaire de Lille', 50.610937, 3.034687, 0),
+  (3, 'Hopital privé La Louvière', 50.646438,3.083563, 5);
 
-INSERT INTO hospital (hosp_name, latitude, longitude, free_beds) VALUES
-  ('Hôpital Saint Vincent de Paul', 50.620312, 3.077438, 2),
-  ('Centre Hospitalier Universitaire de Lille', 50.610937, 3.034687, 0),
-  ('Hôpital privé La Louvière', 50.646438,3.083563, 5);
+DELETE FROM specialty;
+INSERT INTO specialty (idspecialty,spec_name) VALUES
+  (1, 'Cardiologie'),
+  (2, 'Immunologie'),
+  (3, 'Neuropathologie diagnostique'),
+  (4, 'Néphrologie');
 
-INSERT INTO specialty (spec_name) VALUES
-  ('Cardiologie'),
-  ('Immunologie'),
-  ('Neuropathologie diagnostique'),
-  ('Néphrologie');
-  
-
-INSERT INTO hospital_specialty (hospital_id, specialty_id) VALUES
+DELETE FROM hospital_specialty;
+INSERT INTO hospital_specialty (idhospital, idspecialty) VALUES
   (1, 1),
   (1, 2),
   (2, 1),

@@ -1,5 +1,6 @@
 package com.nicorego.nhs.pocapi.controller;
 
+import com.nicorego.nhs.pocapi.service.SpecialtyService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,9 @@ public class HospitalController {
 
     @Autowired
     private HospitalService hospitalService;
+
+    @Autowired
+    private SpecialtyService specialtyService;
 
     @Autowired
     private HospitalRepository hospitalRepository;

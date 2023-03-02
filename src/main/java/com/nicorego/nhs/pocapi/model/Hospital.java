@@ -1,10 +1,5 @@
 package com.nicorego.nhs.pocapi.model;
-/*
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;*/
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -18,9 +13,7 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @Entity
-// @JsonInclude
 @DynamicUpdate
-// @JsonIgnoreProperties("hospital_specialty")
 @Table(name = "hospital")
 public class Hospital implements Serializable {
 
@@ -29,36 +22,30 @@ public class Hospital implements Serializable {
 	@Id
 	@Getter
 	@Setter
-	// @JsonProperty("idhospital")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idhospital;
 
 	@Getter
 	@Setter
-	// @JsonProperty("hospital_name")
 	@Column(name = "hosp_name")
-	private String hospital_name;
+	private String hospitalName;
 
 	@Getter
 	@Setter
-	// @JsonProperty("latitude")
 	@Column(name = "latitude")
 	private Double latitude;
 
 	@Getter
 	@Setter
-	// @JsonProperty("longitude")
 	@Column(name = "longitude")
 	private Double longitude;
 
 	@Getter
 	@Setter
-	// @JsonProperty("free_beds")
 	@Column(name = "free_beds")
 	private Integer freeBeds;
 
 	// Jointure
-	// @JsonManagedReference
     @ManyToMany(
 			fetch = FetchType.LAZY,
 			cascade = {
@@ -99,10 +86,4 @@ public class Hospital implements Serializable {
 	public int hashCode() {
 		return getClass().hashCode();
 	}
-
-	// Convert hospital object to JSON
-	/*public String toJson() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-	 	return mapper.writeValueAsString(this);
-	}*/
 }

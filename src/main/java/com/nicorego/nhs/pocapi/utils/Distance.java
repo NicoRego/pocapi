@@ -1,4 +1,4 @@
-package com.nicorego.nhs.pocapi.business;
+package com.nicorego.nhs.pocapi.utils;
 
 public class Distance {
 

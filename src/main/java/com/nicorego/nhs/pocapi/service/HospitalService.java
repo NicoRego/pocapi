@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.nicorego.nhs.pocapi.model.Hospital;
 import com.nicorego.nhs.pocapi.repository.HospitalRepository;
 
-import static com.nicorego.nhs.pocapi.business.Distance.distanceHaversine;
+import static com.nicorego.nhs.pocapi.utils.Distance.distanceHaversine;
 
 @Service
 public class HospitalService {
