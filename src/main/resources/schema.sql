@@ -22,7 +22,7 @@ CREATE TABLE `specialty` (
 
 DROP TABLE IF EXISTS `hospital_specialty`;
 CREATE TABLE `hospital_specialty` (
-  `idhospital` int NOT NULL,
-  `idspecialty` int NOT NULL,
-  PRIMARY KEY (`idhospital`,`idspecialty`)
+  `hospitalid` int NOT NULL,
+  `specialtyid` int NOT NULL,
+  PRIMARY KEY (`hospitalid`,`specialtyid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

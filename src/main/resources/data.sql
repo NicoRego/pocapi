@@ -12,7 +12,7 @@ INSERT INTO specialty (idspecialty,spec_name) VALUES
   (4, 'Néphrologie');
 
 DELETE FROM hospital_specialty;
-INSERT INTO hospital_specialty (idhospital, idspecialty) VALUES
+INSERT INTO hospital_specialty (hospitalid, specialtyid) VALUES
   (1, 1),
   (1, 2),
   (2, 1),
