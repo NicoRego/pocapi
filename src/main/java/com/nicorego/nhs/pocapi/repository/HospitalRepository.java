@@ -11,19 +11,19 @@ import java.util.List;
 public interface HospitalRepository extends CrudRepository<Hospital, Integer>{
 
     // Main query for API - Get hospitals for a given specialty where beds are available
-    @Query(value = "SELECT * " +
+    @Query(value = "SELECT h.id, h.name, h.latitude, h.longitude, h.free_beds " +
             "FROM hospital h " +
-            "INNER JOIN hospital_specialty hs ON hs.hospitalid = h.idhospital " +
-            "INNER JOIN specialty s ON hs.specialtyid = s.idspecialty " +
+            "INNER JOIN hospital_specialty hs ON hs.idhospital = h.id " +
+            "INNER JOIN specialty s ON hs.idspecialty = s.id " +
             "WHERE h.free_beds > :minFreeBeds " +
-            "AND s.idspecialty = :specialtyId", nativeQuery = true)
+            "AND s.id = :specialtyId", nativeQuery = true)
     List<Hospital> findBySpecialtyAndFreeBeds(@Param("specialtyId") int specialtyId, @Param("minFreeBeds") int minFreeBeds);
 
     // Sample query for API - Get hospitals for a given specialty
     @Query(value = "SELECT * " +
             "FROM hospital h " +
-            "INNER JOIN hospital_specialty hs ON hs.hospitalid = h.idhospital " +
-            "INNER JOIN specialty s ON hs.specialtyid = s.idspecialty " +
-            "WHERE s.idspecialty = ?1", nativeQuery = true)
+            "INNER JOIN hospital_specialty hs ON hs.idhospital = h.id " +
+            "INNER JOIN specialty s ON hs.idspecialty = s.id " +
+            "WHERE s.id = ?1", nativeQuery = true)
     List<Hospital> findBySpecialty(@Param("specialtyId") int specialtyId);
 }

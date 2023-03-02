@@ -23,12 +23,12 @@ public class Hospital implements Serializable {
 	@Getter
 	@Setter
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idhospital;
+	private Long id;
 
 	@Getter
 	@Setter
-	@Column(name = "hosp_name")
-	private String hospitalName;
+	@Column(name = "name")
+	private String name;
 
 	@Getter
 	@Setter

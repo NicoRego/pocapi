@@ -35,7 +35,7 @@ public class PersonalTests {
         System.out.println("====================");
         System.out.println();
         Iterable<Hospital> iterableHospitals = hospitalService.getHospitals();
-        iterableHospitals.forEach(hospital -> System.out.println(hospital.getIdhospital() + "-" + hospital.getHospitalName() + "-" + hospital.getFreeBeds()));
+        iterableHospitals.forEach(hospital -> System.out.println(hospital.getId() + "-" + hospital.getName() + "-" + hospital.getFreeBeds()));
 
         // Get one hospital ********************************************************************************************
 
@@ -48,7 +48,7 @@ public class PersonalTests {
         Optional<Hospital> optionalHospital = hospitalService.getHospitalById(1);
         if (optionalHospital.isPresent()) {
             Hospital oneHospital = optionalHospital.get();
-            System.out.println(oneHospital.getIdhospital() + "-" + oneHospital.getHospitalName());
+            System.out.println(oneHospital.getId() + "-" + oneHospital.getName());
         }
 
         // Get one specialty and related hospitals *********************************************************************
@@ -125,11 +125,11 @@ public class PersonalTests {
             Iterable<Hospital> iterableHospitalsSpecBeds = hospitalService.getHospitalsBySpecialtyAndFreeBeds(givenSpecialtyId, minFreeBeds);
 
             // Print out result
-            System.out.println("Spécialité : " + givenSpecialty.getSpecialtyName());
+            System.out.println("Spécialité : " + givenSpecialty.getName());
             System.out.println();
 
             System.out.println("Hôpitaux associés :");
-            iterableHospitalsSpecBeds.forEach(hospitalSpecBeds -> System.out.println(hospitalSpecBeds.getIdhospital() + "-" + hospitalSpecBeds.getHospitalName() + "-" + hospitalSpecBeds.getFreeBeds()));
+            iterableHospitalsSpecBeds.forEach(hospitalSpecBeds -> System.out.println(hospitalSpecBeds.getId() + "-" + hospitalSpecBeds.getName() + "-" + hospitalSpecBeds.getFreeBeds()));
         }
 
         // Get Hospitals by specialty and free beds ********************************************************************
@@ -151,11 +151,11 @@ public class PersonalTests {
             Iterable<Hospital> iterableHospitalsSpec = hospitalService.getHospitalsBySpecialty(given2ndSpecialtyId);
 
             // Print out result
-            System.out.println("Spécialité : " + given2ndSpecialty.getSpecialtyName());
+            System.out.println("Spécialité : " + given2ndSpecialty.getName());
             System.out.println();
 
             System.out.println("Hôpitaux associés :");
-            iterableHospitalsSpec.forEach(hospitalSpec -> System.out.println(hospitalSpec.getIdhospital() + "-" + hospitalSpec.getHospitalName() + "-" + hospitalSpec.getFreeBeds()));
+            iterableHospitalsSpec.forEach(hospitalSpec -> System.out.println(hospitalSpec.getId() + "-" + hospitalSpec.getName() + "-" + hospitalSpec.getFreeBeds()));
         }
 
         // Get nearest hospitals for a given specialty and with free beds **********************************************
@@ -183,10 +183,10 @@ public class PersonalTests {
             Specialty given3rdSpecialty = optNearestSpecialty.get();
 
             // Print out result
-            System.out.println("Spécialité : " + given3rdSpecialty.getSpecialtyName());
+            System.out.println("Spécialité : " + given3rdSpecialty.getName());
             System.out.println();
 
-            System.out.println(String.format("Hôpital disponible : %s", nearestAvailableHospital.getHospitalName()));
+            System.out.println(String.format("Hôpital disponible : %s", nearestAvailableHospital.getName()));
             System.out.println();
             System.out.println("Distance du point : " + round(Distance.distanceHaversine(nearestAvailableHospital.getLatitude(), nearestAvailableHospital.getLongitude(), latitude, longitude)) + " km(s)");
         }
@@ -201,7 +201,7 @@ public class PersonalTests {
 
         Hospital nearestAvailableHospital2nd = hospitalService.getNearestAvailableHospital(latitude, longitude, given3rdSpecialtyId);
 
-        System.out.println(String.format("Hôpital réservé : %s", nearestAvailableHospital2nd.getHospitalName()));
+        System.out.println(String.format("Hôpital réservé : %s", nearestAvailableHospital2nd.getName()));
         System.out.println(String.format("Nombre de lits disponibles après réservation : %d", nearestAvailableHospital2nd.getFreeBeds()));
         System.out.println();
 
@@ -221,7 +221,7 @@ public class PersonalTests {
         System.out.println("====================================");
         System.out.println();
 
-        System.out.println(String.format("Hôpital réservé : %s", nearestAvailableHospital2nd.getHospitalName()));
+        System.out.println(String.format("Hôpital réservé : %s", nearestAvailableHospital2nd.getName()));
         System.out.println(String.format("Nombre de lits disponibles avant annulation : %d", nearestAvailableHospital2nd.getFreeBeds()));
         System.out.println();
 

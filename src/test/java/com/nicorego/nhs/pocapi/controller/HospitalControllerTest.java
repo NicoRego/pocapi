@@ -46,9 +46,9 @@ public class HospitalControllerTest {
 
         Hospital hospital = new Hospital();
 
-        hospital.setIdhospital(1L);
+        hospital.setId(1L);
         // hospital.setHospitalName("Hopital Saint Vincent de Paul");
-        hospital.setHospitalName("Un nom");
+        hospital.setName("Un nom");
         hospital.setLatitude(50.620312);
         hospital.setLongitude(3.077438);
         hospital.setFreeBeds(2);

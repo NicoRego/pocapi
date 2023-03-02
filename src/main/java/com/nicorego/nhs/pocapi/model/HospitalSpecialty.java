@@ -15,11 +15,11 @@ public class HospitalSpecialty {
     private HospitalSpecialtyId id;
 
     @ManyToOne
-    @JoinColumn(name = "idhospital", insertable = false, updatable = false)
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     private Hospital hospital;
 
     @ManyToOne
-    @JoinColumn(name = "idspecialty", insertable = false, updatable = false)
+    @JoinColumn(name = "id", insertable = false, updatable = false)
     private Specialty specialty;
 
     // Getters and setters
@@ -27,11 +27,11 @@ public class HospitalSpecialty {
 
 @Embeddable
 class HospitalSpecialtyId implements Serializable {
-    @Column(name = "hospitalId")
-    private Long hospitalId;
+    @Column(name = "idhospital")
+    private Long idhospital;
 
-    @Column(name = "specialtyId")
-    private Long specialtyId;
+    @Column(name = "idspecialty")
+    private Long idspecialty;
 
     // Getters and setters
 }

@@ -20,13 +20,12 @@ public class Specialty implements Serializable {
 	@Getter
 	@Setter
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-	private Long idspecialty;
+	private Long id;
 
 	@Getter
 	@Setter
-    @Column(name="spec_name")
-	private String specialtyName;
- 	    
+    @Column(name="name")
+	private String name;
 
 	// Getters and Setters
 
