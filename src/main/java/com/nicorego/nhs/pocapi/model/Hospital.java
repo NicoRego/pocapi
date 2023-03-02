@@ -45,45 +45,4 @@ public class Hospital implements Serializable {
 	@Column(name = "free_beds")
 	private Integer freeBeds;
 
-	// Jointure
-    @ManyToMany(
-			fetch = FetchType.LAZY,
-			cascade = {
-					CascadeType.PERSIST,
-					CascadeType.MERGE
-					}
-			)
-	@JoinTable(
-			name = "hospital_specialty",
-			joinColumns = @JoinColumn(name = "hospitalid"),
-			inverseJoinColumns = @JoinColumn(name = "specialtyid")
-			)
-	@ToString.Exclude
-
-	// Getters and setters
-	  
-    // Specialties
-    
-    public List<Specialty> specialties = new ArrayList<>();
-
-    public List<Specialty> getSpecialties() {
-		return specialties;
-	}	
-
-	public void setSpecialties(List<Specialty> specialties) {
-		this.specialties = specialties;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		Hospital hospital = (Hospital) o;
-		return idhospital != null && Objects.equals(idhospital, hospital.idhospital);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
 }

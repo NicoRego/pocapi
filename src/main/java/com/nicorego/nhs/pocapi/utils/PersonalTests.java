@@ -53,6 +53,7 @@ public class PersonalTests {
 
         // Get one specialty and related hospitals *********************************************************************
 
+        /*
         System.out.println();
         System.out.println("======================================");
         System.out.println("Test - ONE SPECIALTY AND ITS HOSPITALS");
@@ -72,8 +73,11 @@ public class PersonalTests {
                     specialty -> System.out.println("- " + specialty.getHospitalName()));
         }
 
+        */
+
         // Get one hospital and related specialties ********************************************************************
 
+        /*
         System.out.println();
         System.out.println("===========================================");
         System.out.println("Test - ALL HOSPITALS AND THEIRS SPECIALTIES");
@@ -83,9 +87,7 @@ public class PersonalTests {
 
         System.out.println("Nb d'entités dans hospitalRepository = " + maxHospitals);
         Optional<Hospital> optHospitalForSpecialties;
-        for (
-                int hospId = 1;
-                hospId <= maxHospitals; ++hospId) {
+        for (int hospId = 1; hospId <= maxHospitals; ++hospId) {
             optHospitalForSpecialties = hospitalService.getHospitalById(hospId);
             if (optHospitalForSpecialties.isPresent()) {
                 Hospital hospitalForSpecialties = optHospitalForSpecialties.get();
@@ -101,6 +103,7 @@ public class PersonalTests {
                 System.out.println(String.format("Hôpital %d introuvable", hospId));
             }
         }
+        */
 
         // Get Hospitals by specialty and free beds ********************************************************************
 
