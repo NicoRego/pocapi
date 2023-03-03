@@ -11,18 +11,22 @@ import java.io.Serializable;
 @Setter
 @Table(name = "hospital_specialty")
 public class HospitalSpecialty {
+
     @EmbeddedId
     private HospitalSpecialtyId id;
 
-    @ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+    // Join with Hospital
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("id")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Hospital hospital;
 
-    @ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+    // Join with Specialty
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("id")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Specialty specialty;
 
-    // Getters and setters
 }
 
 @Embeddable

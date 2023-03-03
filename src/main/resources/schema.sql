@@ -25,4 +25,10 @@ CREATE TABLE `hospital_specialty` (
   `hospitalid` int NOT NULL,
   `specialtyid` int NOT NULL,
   PRIMARY KEY (`hospitalid`,`specialtyid`)
+  constraint fk_type_hp
+        foreign key(hospitalid)
+            references hospital(id),
+    constraint fk_type_sp
+        foreign key(specialityid)
+            references speciality(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
