@@ -45,4 +45,14 @@ public class Hospital implements Serializable {
 	@Column(name = "free_beds")
 	private Integer freeBeds;
 
+	@Getter
+	@Setter
+	@Transient
+	private String contextMessage;
+
+	// Join with HospitalSpecialty
+	//@OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true)
+	//@JoinColumn(name = "idhospital")
+	//private List<HospitalSpecialty> hospitalSpecialties = new ArrayList<>();
+
 }

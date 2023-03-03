@@ -62,29 +62,69 @@ public class HospitalService {
 		return filteredHospitals.get(distanceHospitals.indexOf(Collections.min(distanceHospitals)));
 	}
 
-	public boolean bedBooking(Hospital hospital) {
+	public Hospital bedBooking(Hospital hospital) {
 
 		// Decrease available beds
 		if (hospital.getFreeBeds() > 0) {
 			hospital.setFreeBeds(hospital.getFreeBeds() - 1);
-
 			// Save hospital
 			saveHospital(hospital);
-		} else {
-			return false;
 		}
 
-		return true;
+		return hospital;
 	}
 
-	public void cancelBedBooking(Hospital hospital) {
+	public boolean bedBookingById(Integer hospitalId) {
+
+		// Set return boolean status
+		boolean booked = false;
+
+		// Get hospital
+		Hospital hospital = this.hospitalRepository.findById(hospitalId).orElse(null);
+
+		// Store locally free beds number
+		int freeBeds = hospital.getFreeBeds();
+
+		// Decrease available beds
+		if (freeBeds > 0) {
+			hospital.setFreeBeds(hospital.getFreeBeds() - 1);
+			// Save hospital
+			saveHospital(hospital);
+			if (freeBeds == hospital.getFreeBeds()+1) {
+				booked = true;
+			}
+		}
+
+		return booked;
+	}
+
+	public Hospital cancelBedBooking(Hospital hospital) {
 
 		// Increase available beds
 		hospital.setFreeBeds(hospital.getFreeBeds() + 1);
-
 		// Save hospital
 		saveHospital(hospital);
 
+		return hospital;
+	}
+
+	public boolean cancelBedBookingById(Integer hospitalId) {
+
+		// Set return boolean status
+		boolean cancelled = false;
+
+		// Get hospital
+		Hospital hospital = this.hospitalRepository.findById(hospitalId).orElse(null);
+
+		// Store locally free beds number
+		int freeBeds = hospital.getFreeBeds();
+
+		// Increase available beds
+		hospital.setFreeBeds(hospital.getFreeBeds() + 1);
+		// Save hospital
+		saveHospital(hospital);
+
+		return cancelled;
 	}
 
 	public Hospital saveHospital(Hospital hospital) {

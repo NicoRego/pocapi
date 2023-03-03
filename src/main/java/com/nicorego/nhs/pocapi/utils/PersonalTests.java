@@ -205,11 +205,12 @@ public class PersonalTests {
         System.out.println(String.format("Nombre de lits disponibles après réservation : %d", nearestAvailableHospital2nd.getFreeBeds()));
         System.out.println();
 
-        if (hospitalService.bedBooking(nearestAvailableHospital2nd)) {
-            System.out.println(String.format("Nombre de lits disponibles après réservation : %d", nearestAvailableHospital2nd.getFreeBeds()));
+        Hospital bookedHospital = hospitalService.bedBooking(nearestAvailableHospital2nd);
+        if (bookedHospital.getFreeBeds() == (nearestAvailableHospital2nd.getFreeBeds()+1)) {
+            System.out.println(String.format("Nombre de lits disponibles après réservation : %d", bookedHospital.getFreeBeds()));
 
         } else {
-            System.out.println(String.format("Réservation non faite. Nombre de lits disponibles après réservation : %d", nearestAvailableHospital2nd.getFreeBeds()));
+            System.out.println(String.format("Réservation non faite. Nombre de lits disponibles après réservation : %d", bookedHospital.getFreeBeds()));
         }
         System.out.println();
 
@@ -225,9 +226,13 @@ public class PersonalTests {
         System.out.println(String.format("Nombre de lits disponibles avant annulation : %d", nearestAvailableHospital2nd.getFreeBeds()));
         System.out.println();
 
-        hospitalService.cancelBedBooking(nearestAvailableHospital2nd);
+        Hospital cancelBookingHospital = hospitalService.bedBooking(nearestAvailableHospital2nd);
+        if (cancelBookingHospital.getFreeBeds() == (nearestAvailableHospital2nd.getFreeBeds()-1)) {
+            System.out.println(String.format("Nombre de lits disponibles après annulation : %d", cancelBookingHospital.getFreeBeds()));
 
-        System.out.println(String.format("Nombre de lits disponibles après annulation : %d", nearestAvailableHospital2nd.getFreeBeds()));
+        } else {
+            System.out.println(String.format("Réservation non faite. Nombre de lits disponibles après réservation : %d", cancelBookingHospital.getFreeBeds()));
+        }
 
     }
 }
