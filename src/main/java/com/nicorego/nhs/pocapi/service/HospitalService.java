@@ -5,13 +5,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.nicorego.nhs.pocapi.model.Hospital;
 import com.nicorego.nhs.pocapi.repository.HospitalRepository;
 
 import static com.nicorego.nhs.pocapi.utils.Distance.distanceHaversine;
+import static com.nicorego.nhs.pocapi.utils.JsonMapper.getHospitalJson;
 
 @Service
 public class HospitalService {
@@ -26,11 +31,11 @@ public class HospitalService {
 		return this.hospitalRepository.findAll();
 	}
 
-	public Optional<Hospital> getHospitalById(int id) {
+	public Optional<Hospital> getHospitalById(Integer id) {
 		return this.hospitalRepository.findById(id);
 	}
 
-	public Iterable<Hospital> getHospitalsBySpecialtyAndFreeBeds(int specialtyId, int minFreeBeds) {
+	public Iterable<Hospital> getHospitalsBySpecialtyAndFreeBeds(Integer specialtyId, int minFreeBeds) {
 		return this.hospitalRepository.findBySpecialtyAndFreeBeds(specialtyId, minFreeBeds);
 	}
 	public Iterable<Hospital> getHospitalsBySpecialty(int specialtyId) {
@@ -40,8 +45,12 @@ public class HospitalService {
 	public Hospital getNearestAvailableHospital(Double latitude, Double longitude, Integer specialtyId) {
 
 		// Pre-Requisites
-		if (latitude == 0 || longitude == 0) {return null;}
-		if (this.specialtyService.getSpecialtyById(specialtyId).isEmpty()) {return null;}
+		if (latitude == 0 || longitude == 0) {
+			return null;
+		}
+		if (this.specialtyService.getSpecialtyById(specialtyId).isEmpty()) {
+			return null;
+		}
 
 		// Filter hospitals by specialty and free beds
 		List<Hospital> filteredHospitals = this.hospitalRepository.findBySpecialtyAndFreeBeds(specialtyId, 0);
@@ -62,6 +71,7 @@ public class HospitalService {
 		return filteredHospitals.get(distanceHospitals.indexOf(Collections.min(distanceHospitals)));
 	}
 
+	@Transactional
 	public Hospital bedBooking(Hospital hospital) {
 
 		// Decrease available beds
@@ -74,30 +84,37 @@ public class HospitalService {
 		return hospital;
 	}
 
+	@Transactional
 	public boolean bedBookingById(Integer hospitalId) {
 
 		// Set return boolean status
 		boolean booked = false;
 
 		// Get hospital
-		Hospital hospital = this.hospitalRepository.findById(hospitalId).orElse(null);
+		Optional<Hospital> hospital = this.hospitalRepository.findById(hospitalId);
 
-		// Store locally free beds number
-		int freeBeds = hospital.getFreeBeds();
+		if (hospital.isPresent()) {
 
-		// Decrease available beds
-		if (freeBeds > 0) {
-			hospital.setFreeBeds(hospital.getFreeBeds() - 1);
-			// Save hospital
-			saveHospital(hospital);
-			if (freeBeds == hospital.getFreeBeds()+1) {
-				booked = true;
+			// Store locally free beds number
+			int freeBeds = hospital.get().getFreeBeds();
+
+			// Decrease available beds
+			if (freeBeds > 0) {
+				hospital.get().setFreeBeds(hospital.get().getFreeBeds() - 1);
+				// Save hospital
+				saveHospital(hospital.get());
+				if (freeBeds == hospital.get().getFreeBeds()+1) {
+					booked = true;
+				}
 			}
+
 		}
 
 		return booked;
+
 	}
 
+	@Transactional
 	public Hospital cancelBedBooking(Hospital hospital) {
 
 		// Increase available beds
@@ -108,21 +125,34 @@ public class HospitalService {
 		return hospital;
 	}
 
+	@Transactional
 	public boolean cancelBedBookingById(Integer hospitalId) {
 
-		// Set return boolean status
+		Integer storedFreeBeds;
 		boolean cancelled = false;
 
 		// Get hospital
 		Hospital hospital = this.hospitalRepository.findById(hospitalId).orElse(null);
 
+		if (hospital == null) {
+			return false;
+		}
+
 		// Store locally free beds number
-		int freeBeds = hospital.getFreeBeds();
+		try {
+			storedFreeBeds = hospital.getFreeBeds();
+		} catch (Exception e){
+			return false;
+		}
 
 		// Increase available beds
 		hospital.setFreeBeds(hospital.getFreeBeds() + 1);
+
 		// Save hospital
 		saveHospital(hospital);
+		if (hospital.getFreeBeds() == (storedFreeBeds + 1)) {
+			cancelled = true;
+		}
 
 		return cancelled;
 	}
