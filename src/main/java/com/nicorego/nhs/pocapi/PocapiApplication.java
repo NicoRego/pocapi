@@ -13,11 +13,11 @@ import com.nicorego.nhs.pocapi.service.SpecialtyService;
 public class PocapiApplication implements CommandLineRunner {
 
 	@Autowired
-	private HospitalService hospitalService;
+	private final HospitalService hospitalService;
 	@Autowired
-	private SpecialtyService specialtyService;
+	private final SpecialtyService specialtyService;
 	@Autowired
-	private HospitalRepository hospitalRepository;
+	private final HospitalRepository hospitalRepository;
 
 	@Autowired
 	public PocapiApplication(HospitalService hospitalService, SpecialtyService specialtyService, HospitalRepository hospitalRepository) {
@@ -32,9 +32,7 @@ public class PocapiApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		//
-		// PersonalTests personalTests = new PersonalTests();
-		// personalTests.main();
+
 	}
 
 }

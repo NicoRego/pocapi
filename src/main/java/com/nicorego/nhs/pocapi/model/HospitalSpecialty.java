@@ -32,10 +32,10 @@ public class HospitalSpecialty {
 @Embeddable
 class HospitalSpecialtyId implements Serializable {
     @Column(name = "idhospital")
-    private Long idhospital;
+    private Integer idhospital;
 
     @Column(name = "idspecialty")
-    private Long idspecialty;
+    private Integer idspecialty;
 
     // Getters and setters
 }

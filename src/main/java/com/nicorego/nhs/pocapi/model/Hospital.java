@@ -2,13 +2,9 @@ package com.nicorego.nhs.pocapi.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @ToString
 @NoArgsConstructor
@@ -18,12 +14,12 @@ import java.util.Objects;
 public class Hospital implements Serializable {
 
 	// Attributes
-	
+
 	@Id
 	@Getter
 	@Setter
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 
 	@Getter
 	@Setter

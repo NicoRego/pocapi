@@ -11,19 +11,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 import static com.nicorego.nhs.pocapi.utils.JsonMapper.getHospitalJson;
 
 @RestController
 public class HospitalController {
 
     @Autowired
-    private HospitalService hospitalService;
+    private final HospitalService hospitalService;
 
-    @Autowired
-    private SpecialtyService specialtyService;
-
-    @Autowired
-    private HospitalRepository hospitalRepository;
+    public HospitalController(HospitalService hospitalService) {
+        this.hospitalService = hospitalService;
+    }
 
     @GetMapping("/search/nearest")
     @ResponseBody
@@ -39,7 +39,7 @@ public class HospitalController {
         // Check if an hospital has been found
         if (nearestAvailableHospital == null) {
             Hospital notFoundHospital = new Hospital();
-            notFoundHospital.setContextMessage(String.format("No nearest/available hospital found for specialty '%d' @ %f,%f",specialtyId,latitude,longitude));
+            notFoundHospital.setContextMessage(String.format("No nearest/available hospital found for specialty '%d' @ %s,%s", specialtyId, latitude.toString(), longitude.toString()));
             ObjectNode notFoundHospitalJson = getHospitalJson(notFoundHospital);
             return new ResponseEntity<>(notFoundHospitalJson,HttpStatus.NOT_FOUND);
         } else {
@@ -58,9 +58,9 @@ public class HospitalController {
             @RequestParam("hospital") Integer hospitalId) {
 
         // Select hospital
-        Hospital selectedHospital = this.hospitalRepository.findById(hospitalId).orElse(null);
+        Optional<Hospital> selectedHospital = this.hospitalService.getHospitalById(hospitalId);
 
-        if (selectedHospital == null) {
+        if (selectedHospital.isEmpty()) {
             Hospital bookedHospital = new Hospital();
             bookedHospital.setContextMessage(String.format("Hospital %d not found", hospitalId));
             ObjectNode bookedHospitalJson = getHospitalJson(bookedHospital);
@@ -68,29 +68,67 @@ public class HospitalController {
         }
 
         // Get free beds number
-        int freeBeds = selectedHospital.getFreeBeds();
+        int freeBeds = selectedHospital.get().getFreeBeds();
 
         // Book a bed
-        hospitalService.bedBooking(selectedHospital);
+        hospitalService.bedBooking(selectedHospital.get());
 
-        if ((selectedHospital.getFreeBeds() + 1) == freeBeds){
+        if ((selectedHospital.get().getFreeBeds() + 1) == freeBeds){
             try {
-                selectedHospital.setContextMessage(String.format("Bed booked successfully in hospital %d", hospitalId));
-                ObjectNode bookedHospitalJson = getHospitalJson(selectedHospital);
+                selectedHospital.get().setContextMessage(String.format("Bed booked successfully in hospital %d", hospitalId));
+                ObjectNode bookedHospitalJson = getHospitalJson(selectedHospital.get());
                 return new ResponseEntity<>(bookedHospitalJson, HttpStatus.OK);
             } catch (Exception e) {
-                selectedHospital.setContextMessage(e.getMessage());
-                ObjectNode bookedHospitalJson = getHospitalJson(selectedHospital);
+                selectedHospital.get().setContextMessage(e.getMessage() + " - " + e.getClass());
+                ObjectNode bookedHospitalJson = getHospitalJson(selectedHospital.get());
                 return new ResponseEntity<>(bookedHospitalJson, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
-            if (selectedHospital.getFreeBeds() == 0) {
-                selectedHospital.setContextMessage(String.format("No bed available in Hospital %d", hospitalId));
+            if (selectedHospital.get().getFreeBeds() == 0) {
+                selectedHospital.get().setContextMessage(String.format("No bed available in Hospital %d", hospitalId));
             } else {
-                selectedHospital.setContextMessage(String.format("Unable to book a bed in Hospital %d", hospitalId));
+                selectedHospital.get().setContextMessage(String.format("Unable to book a bed in Hospital %d", hospitalId));
             }
-            ObjectNode bookedHospitalJson = getHospitalJson(selectedHospital);
-            return new ResponseEntity<>(bookedHospitalJson,HttpStatus.BAD_REQUEST);
+            ObjectNode bookedHospitalJson = getHospitalJson(selectedHospital.get());
+            return new ResponseEntity<>(bookedHospitalJson,HttpStatus.OK);
+        }
+    }
+    @PutMapping("/bed/booking2")
+    public ResponseEntity<ObjectNode> bedBooking2 (
+            @RequestParam("hospital") Integer hospitalId) {
+
+        // Book a bed
+        if (this.hospitalService.bedBookingById(hospitalId)) {
+            try {
+                Optional<Hospital> returnHospital = this.hospitalService.getHospitalById(hospitalId);
+                returnHospital.get().setContextMessage(String.format("Bed booked successfully in hospital %d", hospitalId));
+                ObjectNode bookedHospitalJson = getHospitalJson(returnHospital.get());
+                return new ResponseEntity<>(bookedHospitalJson, HttpStatus.OK);
+            } catch (Exception e) {
+                Hospital defaultHospital = new Hospital();
+
+                defaultHospital.setContextMessage(e.getMessage() + " - " + e.getClass());
+                ObjectNode bookedHospitalJson = getHospitalJson(defaultHospital);
+                return new ResponseEntity<>(bookedHospitalJson, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            Optional<Hospital> returnHospital = this.hospitalService.getHospitalById(hospitalId);
+
+            if (returnHospital.isEmpty()) {
+                Hospital bookedHospital = new Hospital();
+                bookedHospital.setContextMessage(String.format("Hospital %d not found", hospitalId));
+                ObjectNode bookedHospitalJson = getHospitalJson(bookedHospital);
+                return new ResponseEntity<>(bookedHospitalJson,HttpStatus.NOT_FOUND);
+            } else {
+                if (returnHospital.get().getFreeBeds() == 0) {
+                    returnHospital.get().setContextMessage(String.format("No bed available in Hospital %d", hospitalId));
+                } else {
+                    returnHospital.get().setContextMessage(String.format("Unable to book a bed in Hospital %d", hospitalId));
+                }
+                ObjectNode bookedHospitalJson = getHospitalJson(returnHospital.get());
+                return new ResponseEntity<>(bookedHospitalJson,HttpStatus.OK);
+            }
+
         }
     }
 
@@ -99,9 +137,9 @@ public class HospitalController {
             @RequestParam("hospital") Integer hospitalId) {
 
         // Select hospital
-        Hospital selectedHospital = this.hospitalRepository.findById(hospitalId).orElse(null);
+        Optional<Hospital> selectedHospital = this.hospitalService.getHospitalById(hospitalId);
 
-        if (selectedHospital == null) {
+        if (selectedHospital.isEmpty()) {
             Hospital cancelBookedHospital = new Hospital();
             cancelBookedHospital.setContextMessage(String.format("Hospital %d not found", hospitalId));
             ObjectNode cancelBookedHospitalJson = getHospitalJson(cancelBookedHospital);
@@ -109,27 +147,76 @@ public class HospitalController {
         }
 
         // Get free beds number
-        int freeBeds = selectedHospital.getFreeBeds();
+        int freeBeds = selectedHospital.get().getFreeBeds();
 
         // Cancel booking
-        hospitalService.cancelBedBooking(selectedHospital);
+        this.hospitalService.cancelBedBooking(selectedHospital.get());
 
-        if ((selectedHospital.getFreeBeds() - 1) == freeBeds) {
+        if ((selectedHospital.get().getFreeBeds() - 1) == freeBeds) {
             try {
-                selectedHospital.setContextMessage(String.format("Booking cancelled successfully in hospital %d", hospitalId));
-                ObjectNode cancelBookedHospitalJson = getHospitalJson(selectedHospital);
+                selectedHospital.get().setContextMessage(String.format("Booking cancelled successfully in hospital %d", hospitalId));
+                ObjectNode cancelBookedHospitalJson = getHospitalJson(selectedHospital.get());
                 return new ResponseEntity<>(cancelBookedHospitalJson, HttpStatus.OK);
             } catch (Exception e) {
-                selectedHospital.setContextMessage(e.getMessage());
-                ObjectNode cancelBookedHospitalJson = getHospitalJson(selectedHospital);
+                selectedHospital.get().setContextMessage(e.getMessage() + " - " + e.getClass());
+                ObjectNode cancelBookedHospitalJson = getHospitalJson(selectedHospital.get());
                 return new ResponseEntity<>(cancelBookedHospitalJson, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
-            selectedHospital.setContextMessage(String.format("Unable cancel booking in Hospital %d", hospitalId));
-            ObjectNode cancelBookedHospitalJson = getHospitalJson(selectedHospital);
+            selectedHospital.get().setContextMessage(String.format("Unable to cancel booking in Hospital %d", hospitalId));
+            ObjectNode cancelBookedHospitalJson = getHospitalJson(selectedHospital.get());
             return new ResponseEntity<>(cancelBookedHospitalJson,HttpStatus.OK);
         }
     }
 
+    @PutMapping("/bed/booking/cancel2")
+    public ResponseEntity<ObjectNode> cancemBedBooking2 (
+            @RequestParam("hospital") Integer hospitalId) {
+
+        Hospital defaultHospital = new Hospital();
+
+        // Book a bed
+        if (this.hospitalService.cancelBedBookingById(hospitalId)) {
+            try {
+                Optional<Hospital> returnHospital = this.hospitalService.getHospitalById(hospitalId);
+                returnHospital.get().setContextMessage(String.format("Bed booked successfully in hospital %d", hospitalId));
+                ObjectNode bookedHospitalJson = getHospitalJson(returnHospital.get());
+                return new ResponseEntity<>(bookedHospitalJson, HttpStatus.OK);
+            } catch (Exception e) {
+                defaultHospital.setContextMessage(e.getMessage() + " - " + e.getClass());
+                ObjectNode bookedHospitalJson = getHospitalJson(defaultHospital);
+                return new ResponseEntity<>(bookedHospitalJson, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            Optional<Hospital> returnHospital = this.hospitalService.getHospitalById(hospitalId);
+
+            if (returnHospital.get().getFreeBeds() == 0) {
+                returnHospital.get().setContextMessage(String.format("No bed available in Hospital %d", hospitalId));
+            } else {
+                returnHospital.get().setContextMessage(String.format("Unable to book a bed in Hospital %d", hospitalId));
+            }
+            ObjectNode bookedHospitalJson = getHospitalJson(returnHospital.get());
+            return new ResponseEntity<>(bookedHospitalJson,HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/search/hospital")
+    @ResponseBody
+    public ResponseEntity<ObjectNode> getHospital(@RequestParam("id") Integer hospitalId) {
+
+        // Select hospital
+        Optional<Hospital> selectedHospital = this.hospitalService.getHospitalById(hospitalId);
+
+        if (selectedHospital.isEmpty()) {
+            Hospital cancelBookedHospital = new Hospital();
+            cancelBookedHospital.setContextMessage(String.format("Hospital %d not found", hospitalId));
+            ObjectNode cancelBookedHospitalJson = getHospitalJson(cancelBookedHospital);
+            return new ResponseEntity<>(cancelBookedHospitalJson, HttpStatus.NOT_FOUND);
+        } else {
+            selectedHospital.get().setContextMessage(String.format("Hospital %d found successfully", hospitalId));
+            ObjectNode cancelBookedHospitalJson = getHospitalJson(selectedHospital.get());
+            return new ResponseEntity<>(cancelBookedHospitalJson, HttpStatus.OK);
+        }
+    }
 }
 
