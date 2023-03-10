@@ -2,48 +2,76 @@ package com.nicorego.nhs.pocapi.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nicorego.nhs.pocapi.model.Hospital;
+import com.nicorego.nhs.pocapi.repository.HospitalRepository;
 import com.nicorego.nhs.pocapi.service.HospitalService;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import javax.sql.DataSource;
 import java.util.Optional;
 
 import static com.nicorego.nhs.pocapi.utils.JsonMapper.getHospitalJson;
-import static org.mockito.BDDMockito.given;
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import org.springframework.test.web.servlet.MvcResult;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @AutoConfigureJsonTesters
 @SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
 @AutoConfigureMockMvc
 public class HospitalControllerTest {
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
+    @MockBean
+    private TestEntityManager entityManager;
 
     @Autowired
     private final MockMvc mvc;
 
     @Autowired
-    @MockBean
+    @InjectMocks
     private final HospitalService hospitalService;
 
+    @MockBean
     @Autowired
-    public HospitalControllerTest(MockMvc mvc, HospitalService hospitalService) {
+    private final HospitalRepository hospitalRepository;
+
+    @Autowired
+    public HospitalControllerTest(MockMvc mvc, HospitalService hospitalService, HospitalRepository hospitalRepository) {
         this.mvc = mvc;
         this.hospitalService = hospitalService;
+        this.hospitalRepository = hospitalRepository;
+    }
+
+    @Before
+    public void setUp() throws Exception {
+
+        // Charger la base avant les tests
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("schema.sql"));
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("data.sql"));
     }
 
     @Test
@@ -64,22 +92,19 @@ public class HospitalControllerTest {
         String searchLongitude = "3.051438";
         Integer searchSpecialtyId = 1;
 
-        // Set expected json object
-        Hospital responseHospital = new Hospital();
+        // Count records
+        Long countRows = this.hospitalRepository.count();
+        System.out.println(countRows);
 
-        responseHospital.setId(1);
-        responseHospital.setName("Hopital Saint Vincent de Paul");
-        responseHospital.setLatitude(50.620312);
-        responseHospital.setLongitude(3.077438);
-        responseHospital.setFreeBeds(2);
-        responseHospital.setContextMessage("");
+        // Get expected hospital object
+        Optional <Hospital> responseHospital = this.hospitalRepository.findById(1);
 
-        ObjectNode responseHospitalJson = getHospitalJson(responseHospital);
-        String responseHospitalString =responseHospitalJson.toString();
+        ObjectNode responseHospitalJson = getHospitalJson(responseHospital.get());
+        String responseHospitalString = responseHospitalJson.toString();
 
         // Given
         given(hospitalService.getNearestAvailableHospital(Double.parseDouble(searchLatitude), Double.parseDouble(searchLongitude), searchSpecialtyId))
-                .willReturn(responseHospital);
+                .willReturn(responseHospital.get());
 
         // When
         String url = String.format("/search/nearest?latitude=%S&longitude=%s&specialty=%d", searchLatitude, searchLongitude, searchSpecialtyId);
@@ -232,6 +257,9 @@ public class HospitalControllerTest {
          ObjectNode responseHospitalJson = getHospitalJson(responseHospital);
          String responseHospitalString = responseHospitalJson.toString();
 
+
+         // Mockito.when(this.repository.save(Mockito.any())).thenReturn(updatedAlertEntity);
+
          // Given
          Hospital givenHospital = new Hospital();
 
@@ -363,12 +391,16 @@ public class HospitalControllerTest {
                 .willReturn(responseHospital);
 
         // When
-        String url = String.format("/bed/booking?hospital=%d", givenId);
+        String url = String.format("/bed/booking/cancel?hospital=%d", givenId);
 
-        MockHttpServletResponse response = mvc.perform(put(url)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andReturn()
-                .getResponse();
+        MockHttpServletRequestBuilder requestBuilder = get(url);
+
+        MvcResult result = mvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(3))
+                .andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
 
         // Then
         assertThat(response

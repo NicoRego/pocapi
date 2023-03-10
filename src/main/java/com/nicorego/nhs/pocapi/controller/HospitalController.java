@@ -2,9 +2,7 @@ package com.nicorego.nhs.pocapi.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nicorego.nhs.pocapi.model.Hospital;
-import com.nicorego.nhs.pocapi.repository.HospitalRepository;
 import com.nicorego.nhs.pocapi.service.HospitalService;
-import com.nicorego.nhs.pocapi.service.SpecialtyService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,6 +60,7 @@ public class HospitalController {
 
         if (selectedHospital.isEmpty()) {
             Hospital bookedHospital = new Hospital();
+
             bookedHospital.setContextMessage(String.format("Hospital %d not found", hospitalId));
             ObjectNode bookedHospitalJson = getHospitalJson(bookedHospital);
             return new ResponseEntity<>(bookedHospitalJson,HttpStatus.NOT_FOUND);
@@ -93,6 +92,7 @@ public class HospitalController {
             return new ResponseEntity<>(bookedHospitalJson,HttpStatus.OK);
         }
     }
+
     @PutMapping("/bed/booking2")
     public ResponseEntity<ObjectNode> bedBooking2 (
             @RequestParam("hospital") Integer hospitalId) {
@@ -101,6 +101,7 @@ public class HospitalController {
         if (this.hospitalService.bedBookingById(hospitalId)) {
             try {
                 Optional<Hospital> returnHospital = this.hospitalService.getHospitalById(hospitalId);
+
                 returnHospital.get().setContextMessage(String.format("Bed booked successfully in hospital %d", hospitalId));
                 ObjectNode bookedHospitalJson = getHospitalJson(returnHospital.get());
                 return new ResponseEntity<>(bookedHospitalJson, HttpStatus.OK);
@@ -116,6 +117,7 @@ public class HospitalController {
 
             if (returnHospital.isEmpty()) {
                 Hospital bookedHospital = new Hospital();
+
                 bookedHospital.setContextMessage(String.format("Hospital %d not found", hospitalId));
                 ObjectNode bookedHospitalJson = getHospitalJson(bookedHospital);
                 return new ResponseEntity<>(bookedHospitalJson,HttpStatus.NOT_FOUND);
@@ -141,6 +143,7 @@ public class HospitalController {
 
         if (selectedHospital.isEmpty()) {
             Hospital cancelBookedHospital = new Hospital();
+
             cancelBookedHospital.setContextMessage(String.format("Hospital %d not found", hospitalId));
             ObjectNode cancelBookedHospitalJson = getHospitalJson(cancelBookedHospital);
             return new ResponseEntity<>(cancelBookedHospitalJson,HttpStatus.NOT_FOUND);
