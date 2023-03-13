@@ -8,8 +8,6 @@ import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @ToString
 @NoArgsConstructor
@@ -28,10 +26,5 @@ public class Specialty implements Serializable {
 	@Setter
     @Column(name="name")
 	private String name;
-
-	// Join with HospitalSpecialty
-	//@OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)
-	//@JoinColumn(name = "idspecialty")
-	//private List<HospitalSpecialty> hospitalSpecialties = new ArrayList<>();
 
 }

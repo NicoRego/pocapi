@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Entity
 @Getter
 @Setter
@@ -29,13 +27,3 @@ public class HospitalSpecialty {
 
 }
 
-@Embeddable
-class HospitalSpecialtyId implements Serializable {
-    @Column(name = "idhospital")
-    private Integer idhospital;
-
-    @Column(name = "idspecialty")
-    private Integer idspecialty;
-
-    // Getters and setters
-}

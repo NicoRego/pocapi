@@ -46,9 +46,4 @@ public class Hospital implements Serializable {
 	@Transient
 	private String contextMessage;
 
-	// Join with HospitalSpecialty
-	//@OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true)
-	//@JoinColumn(name = "idhospital")
-	//private List<HospitalSpecialty> hospitalSpecialties = new ArrayList<>();
-
 }
